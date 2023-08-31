@@ -15,6 +15,6 @@ public interface ApiService {
             "Accept: application/json",
             "X-API-KEY: " + TOKEN
     })
-    @GET("v1.3/movie?field=rating.kp&search=7-10&sortField=votes.kp&sortType =-1&limit=5")
+    @GET("movie?field=rating.kp&search=7-10&sortField=votes.kp&sortType=-1&limit=30")
     Single<MovieResponse> loadMovies(@Query("page") int page);
 }

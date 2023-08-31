@@ -11,7 +11,6 @@ import androidx.lifecycle.MutableLiveData;
 import com.github.gunin_igor75.movies.pojo.Movie;
 import com.github.gunin_igor75.movies.pojo.MovieResponse;
 import com.github.gunin_igor75.movies.service.ApiFactory;
-import com.github.gunin_igor75.movies.service.ApiService;
 
 import java.util.List;
 
@@ -50,7 +49,7 @@ public class MainViewModel extends AndroidViewModel {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Throwable {
-                        Log.d(TAG, "Error " + throwable.getMessage());
+                        Log.d(TAG, "Error !!!!!!!!" + throwable.getMessage());
                     }
                 });
         compositeDisposable.add(disposable);
