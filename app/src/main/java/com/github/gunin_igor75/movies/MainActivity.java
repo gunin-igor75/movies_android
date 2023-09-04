@@ -1,7 +1,9 @@
 package com.github.gunin_igor75.movies;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
@@ -22,12 +24,14 @@ public class MainActivity extends AppCompatActivity {
 
     private MoviesAdapter moviesAdapter;
 
+    private ProgressBar progressBarLoading;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        recyclerviewMovies = findViewById(R.id.recyclerviewMovies);
+        init();
         moviesAdapter = new MoviesAdapter();
         recyclerviewMovies.setAdapter(moviesAdapter);
         recyclerviewMovies.setLayoutManager(new GridLayoutManager(this, 2));
@@ -38,8 +42,31 @@ public class MainActivity extends AppCompatActivity {
                 moviesAdapter.setMovies(movies);
             }
         });
+        viewModel.getIsLoading().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean isLoading) {
+                if (isLoading) {
+                    progressBarLoading.setVisibility(View.VISIBLE);
+                } else {
+                    progressBarLoading.setVisibility(View.GONE);
+                }
+            }
+        });
 
-        viewModel.loadMovies();
+        moviesAdapter.setOnReachEndListener(() -> viewModel.loadMovies());
+
+        moviesAdapter.setOnClickMovieListener(new MoviesAdapter.OnClickMovieListener() {
+            @Override
+            public void onClickMovie(Movie movie) {
+                Intent intent = ActivityMovieDetail.newIntent(MainActivity.this, movie);
+                MainActivity.this.startActivity(intent);
+            }
+        });
+    }
+
+    private void init() {
+        recyclerviewMovies = findViewById(R.id.recyclerviewMovies);
+        progressBarLoading = findViewById(R.id.progressBarLoading);
     }
 
 }

@@ -2,7 +2,9 @@ package com.github.gunin_igor75.movies.pojo;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Movie {
+import java.io.Serializable;
+
+public class Movie implements Serializable {
 
     @SerializedName("id")
     private int id;
@@ -20,15 +22,6 @@ public class Movie {
 
     @SerializedName("rating")
     private Rating rating;
-
-    public Movie(int id, String name, String description, int year, Poster poster, Rating rating) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.year = year;
-        this.poster = poster;
-        this.rating = rating;
-    }
 
     public int getId() {
         return id;
@@ -54,15 +47,13 @@ public class Movie {
         return rating;
     }
 
-    @Override
-    public String toString() {
-        return "Movie{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", year=" + year +
-                ", poster=" + poster +
-                ", rating=" + rating +
-                '}';
+
+    public Movie(int id, String name, String description, int year, Poster poster, Rating rating) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.year = year;
+        this.poster = poster;
+        this.rating = rating;
     }
 }

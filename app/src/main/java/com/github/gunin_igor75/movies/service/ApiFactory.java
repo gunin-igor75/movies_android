@@ -6,7 +6,7 @@ import retrofit2.adapter.rxjava3.*;
 
 public class ApiFactory {
 
-    private static final String BASE_URL = "https://api.kinopoisk.dev/v1.3/";
+    private static final String BASE_URL = "https://api.kinopoisk.dev/";
 
     private static final Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(BASE_URL)

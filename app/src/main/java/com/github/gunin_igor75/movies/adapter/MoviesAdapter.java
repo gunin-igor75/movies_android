@@ -1,6 +1,5 @@
 package com.github.gunin_igor75.movies.adapter;
 
-import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +21,18 @@ import java.util.List;
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder> {
 
     private List<Movie> movies = new ArrayList<>();
+
+    private OnReachEndListener onReachEndListener;
+
+    private OnClickMovieListener onClickMovieListener;
+
+    public void setOnClickMovieListener(OnClickMovieListener onClickMovieListener) {
+        this.onClickMovieListener = onClickMovieListener;
+    }
+
+    public void setOnReachEndListener(OnReachEndListener onReachEndListener) {
+        this.onReachEndListener = onReachEndListener;
+    }
 
     public void setMovies(List<Movie> movies) {
         this.movies = movies;
@@ -51,6 +62,18 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         Drawable backGround = ContextCompat.getDrawable(holder.itemView.getContext(), backgroundId);
         holder.textViewRating.setBackground(backGround);
         holder.textViewRating.setText(String.valueOf(rating));
+
+        if (position >= getItemCount() - 10 && onReachEndListener != null) {
+            onReachEndListener.onReachEnd();
+        }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onClickMovieListener != null) {
+                    onClickMovieListener.onClickMovie(movie);
+                }
+            }
+        });
     }
 
     private int getBackgroundId(double rating) {
@@ -79,5 +102,13 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
             imageViewPoster = itemView.findViewById(R.id.imageViewPoster);
             textViewRating = itemView.findViewById(R.id.textViewRating);
         }
+    }
+
+    public interface OnReachEndListener{
+        void onReachEnd();
+    }
+
+    public interface OnClickMovieListener{
+        void onClickMovie(Movie movie);
     }
 }
