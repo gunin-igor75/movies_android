@@ -2,9 +2,12 @@ package com.github.gunin_igor75.movies;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -65,8 +68,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
-        recyclerviewMovies = findViewById(R.id.recyclerviewMovies);
+        recyclerviewMovies = findViewById(R.id.recyclerViewMovies);
         progressBarLoading = findViewById(R.id.progressBarLoading);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.itemFavourite) {
+            Intent intent = ActivityFavouriteMovie.newInstant(this);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

@@ -2,12 +2,14 @@ package com.github.gunin_igor75.movies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,11 +32,13 @@ public class ActivityMovieDetail extends AppCompatActivity {
     private RecyclerView recyclerViewTrailers;
     private RecyclerView recyclerViewReviews;
 
+    private ImageView imageViewStar;
     private MovieDetailViewModel viewModel;
 
     private static String MOVIE = "movie";
 
     private static String TAG = "ActivityMovieDetail";
+
 
 
     @Override
@@ -84,6 +88,21 @@ public class ActivityMovieDetail extends AppCompatActivity {
                 reviewAdapter.setReviews(reviews);
             }
         });
+
+        Drawable starOn = ContextCompat.getDrawable(ActivityMovieDetail.this, android.R.drawable.star_big_on);
+        Drawable starOff = ContextCompat.getDrawable(ActivityMovieDetail.this, android.R.drawable.star_big_off);
+        viewModel.getFavoriteMovie(id).observe(this, new Observer<Movie>() {
+            @Override
+            public void onChanged(Movie movieFromDb) {
+                if (movieFromDb == null) {
+                    imageViewStar.setImageDrawable(starOff);
+                    imageViewStar.setOnClickListener(view -> viewModel.saveMovie(movie));
+                } else {
+                    imageViewStar.setImageDrawable(starOn);
+                    imageViewStar.setOnClickListener(view -> viewModel.deleteMovie(id));
+                }
+            }
+        });
     }
 
     public void init() {
@@ -93,6 +112,7 @@ public class ActivityMovieDetail extends AppCompatActivity {
         textViewDescription = findViewById(R.id.textViewDescription);
         recyclerViewTrailers = findViewById(R.id.recyclerViewTrailers);
         recyclerViewReviews = findViewById(R.id.recyclerViewReviews);
+        imageViewStar = findViewById(R.id.imageViewStar);
         viewModel = new ViewModelProvider(this).get(MovieDetailViewModel.class);
     }
 

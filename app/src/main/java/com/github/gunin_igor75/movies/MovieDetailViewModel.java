@@ -8,6 +8,9 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.github.gunin_igor75.movies.db.MovieDao;
+import com.github.gunin_igor75.movies.db.MovieDataBase;
+import com.github.gunin_igor75.movies.pojo.Movie;
 import com.github.gunin_igor75.movies.pojo.Review;
 import com.github.gunin_igor75.movies.pojo.ReviewResponse;
 import com.github.gunin_igor75.movies.pojo.Trailer;
@@ -26,7 +29,7 @@ public class MovieDetailViewModel extends AndroidViewModel {
 
     private final MutableLiveData<List<Review>> reviews = new MutableLiveData<>();
 
-
+    private final MovieDao movieDao;
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     private static final String TAG = "MovieDetailViewModel";
@@ -41,8 +44,12 @@ public class MovieDetailViewModel extends AndroidViewModel {
 
     public MovieDetailViewModel(@NonNull Application application) {
         super(application);
+        movieDao = MovieDataBase.getInstance(application).movieDao();
     }
 
+    public LiveData<Movie> getFavoriteMovie(int movieId) {
+        return movieDao.getMovieById(movieId);
+    }
 
     public void loadTrailers(int id) {
         Disposable disposable = ApiFactory.apiService.loadTrailers(id)
@@ -60,7 +67,25 @@ public class MovieDetailViewModel extends AndroidViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(ReviewResponse::getReviews)
                 .subscribe(reviews::setValue,
-                        throwable -> Log.d(TAG, "Error load reviews " + throwable.toString()));
+                        throwable -> Log.e(TAG, "Error load reviews " + throwable.toString()));
+        compositeDisposable.add(disposable);
+    }
+
+    public void saveMovie(Movie movie) {
+        Disposable disposable = movieDao.saveMovie(movie)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> Log.i(TAG, "Save movie: " + movie),
+                        throwable -> Log.e(TAG, "Error save movie " + throwable.toString()));
+        compositeDisposable.add(disposable);
+    }
+
+    public void deleteMovie(int movieId) {
+        Disposable disposable = movieDao.deleteMovie(movieId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> Log.i(TAG, "Delete movie: " + movieId),
+                        throwable -> Log.e(TAG, "Error delete movie " + throwable.toString()));
         compositeDisposable.add(disposable);
     }
 
